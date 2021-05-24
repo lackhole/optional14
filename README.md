@@ -1,7 +1,7 @@
 # Optional14
 
 ## C++14 implementation of std::optional
-* Standalone (boost **not** required)
+* Standalone (boost **not** required. Used C++14 STL only)
 * Header only
 
 ```cpp
