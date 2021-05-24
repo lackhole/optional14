@@ -4,7 +4,7 @@
 * Standalone (boost **not** required)
 * Header only
 
-```
+```cpp
 namespace o14 = optional14;
 
 o14::optional<std::string> op;
@@ -16,7 +16,7 @@ op = {};
 std::cout << op.value_or("null null") << '\n';  // null null
 ```
 
-```
+```cpp
 std::map<o14::optional<int>, std::string> m = {
     {3, "three"}, {5, "five"}, {o14::nullopt, "null"}, {1, "one"}
 };
@@ -25,13 +25,13 @@ for (const auto &p : m) {
   std::cout << p.first.value_or(-100) << " : " << p.second << '\n';
 }
 // output:
-  -100 : null
-  1 : one
-  3 : three
-  5 : five
+//  -100 : null
+//  1 : one
+//  3 : three
+//  5 : five
 ```
 
-```
+```cpp
 auto div = [](int a, int b) -> o14::optional<int> {
     if (b == 0) return o14::nullopt;
     return a / b;
@@ -45,7 +45,7 @@ try {
 }
 ```
 
-```
+```cpp
 struct NoMove {
   NoMove() = default;
   NoMove(const NoMove&) {
