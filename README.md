@@ -56,7 +56,7 @@ std::swap(op1, op2); // copy is selected for non-movable object
 ```
 [example code](main.cc)
 
-Met the all requirements of the [current STL](https://en.cppreference.com/w/cpp/utility/optional) except for the `noexcept(... && std::is_nothrow_swappable<value_type>::value)`,
+Met the all requirements of the [current STL](https://en.cppreference.com/w/cpp/utility/optional) except for the [`std::is_nothrow_swappable<value_type>::value`](https://github.com/lackhole/optional14/blob/main/optional14/include/optional14/optional/optional.h#L224),
     since there is no way to implement this in C++14
 
 ### C++11 implementation: WIP
