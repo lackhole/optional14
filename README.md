@@ -24,6 +24,11 @@ std::map<o14::optional<int>, std::string> m = {
 for (const auto &p : m) {
   std::cout << p.first.value_or(-100) << " : " << p.second << '\n';
 }
+// output:
+  -100 : null
+  1 : one
+  3 : three
+  5 : five
 ```
 
 ```
