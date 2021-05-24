@@ -1,7 +1,8 @@
 # Optional14
 
-## C++14 Implementation of std::optional
-
+## C++14 implementation of std::optional
+* Standalone (boost **not** required)
+* Header only
 
 ```
 namespace o14 = optional14;
