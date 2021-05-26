@@ -75,9 +75,17 @@ class optional :
     this->construct_if(std::move(*other));
   }
 
-  template<typename ...Args, std::enable_if_t<std::is_constructible<value_type, Args...>::value, int> = 0>
-  constexpr explicit optional(in_place_t, Args&&... args)
-    : base(in_place, std::forward<Args>(args)...) {}
+  // Separated into 2 overloads to prevent MSVC from making an ambiguous call in C++14
+  template<std::enable_if_t<std::is_constructible<value_type>::value, int> = 0>
+  constexpr explicit optional(in_place_t)
+    : base(in_place) {}
+
+  template<typename Arg, typename ...Args,
+    std::enable_if_t<
+      std::is_constructible<value_type, Arg, Args...>::value,
+    int> = 0>
+  constexpr explicit optional(in_place_t, Arg&& arg, Args&&... args)
+    : base(in_place, std::forward<Arg>(arg), std::forward<Args>(args)...) {}
 
   template<typename U, typename ...Args,
     std::enable_if_t<
