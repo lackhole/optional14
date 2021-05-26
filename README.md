@@ -3,6 +3,7 @@
 ## C++14 implementation of std::optional
 * Standalone (boost **not** required. Used C++14 STL only)
 * Header only
+* You can get a integrated single header file at [here](https://github.com/lackhole/optional14/releases)
 
 ```cpp
 namespace o14 = optional14;
@@ -60,7 +61,6 @@ o14::optional<NoMove> op2;
 std::swap(op1, op2); // copy is selected for non-movable object
 ```
 [example code](main.cc)  
-You can get integrated single header file at [here](https://github.com/lackhole/optional14/releases)
 
 Met the all requirements of the [current STL](https://en.cppreference.com/w/cpp/utility/optional) except for the [`std::is_nothrow_swappable<value_type>::value`](https://github.com/lackhole/optional14/blob/main/optional14/include/optional14/optional/optional.h#L224),
     since there is no way to implement this in C++14
