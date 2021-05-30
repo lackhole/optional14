@@ -40,13 +40,13 @@ using is_swappable_with = detail::is_swappable_with_impl<T, U>;
 
 template<typename T>
 struct is_swappable :
-  std::conditional_t<
+  std::conditional<
     !is_referencable<T>::value,
     std::false_type,
     is_swappable_with<
-      std::add_lvalue_reference_t<T>,
-      std::add_lvalue_reference_t<T>>
-  >{};
+      typename std::add_lvalue_reference<T>::type,
+      typename std::add_lvalue_reference<T>::type>
+  >::type {};
 
 } // namespace optional
 } // namespace internal

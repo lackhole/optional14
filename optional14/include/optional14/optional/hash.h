@@ -16,12 +16,13 @@
 namespace std {
 
 template<typename T>
-struct hash<optional14::optional<T>> : optional14::internal::optional::hash_constructible<std::remove_const_t<T>> {
+struct hash<optional14::optional<T>> :
+  optional14::internal::optional::hash_constructible<typename std::remove_const<T>::type> {
   using argument_type = optional14::optional<T>;
   using result_type = std::size_t;
 
   result_type operator()(const argument_type& key) const {
-    return key.has_value() ? ::std::hash<std::remove_const_t<T>>()(*key) : 0;
+    return key.has_value() ? ::std::hash<typename std::remove_const<T>::type>()(*key) : 0;
   }
 };
 

@@ -8,6 +8,7 @@
 # include <type_traits>
 # include <utility>
 #
+# include "optional14/optional/internal/constexpr.h"
 # include "optional14/optional/inplace_t.h"
 
 namespace optional14 {
@@ -33,13 +34,13 @@ struct dtor {
     }
   }
 
-  constexpr inline const value_type* pointer() const { return &val; }
-  constexpr inline       value_type* pointer()       { return &val; }
+  OPTIONAL14_CONSTEXPR inline const value_type* pointer() const { return &val; }
+  OPTIONAL14_CONSTEXPR inline       value_type* pointer()       { return &val; }
 
-  constexpr inline const value_type& ref() const&  { return val;             }
-  constexpr inline       value_type& ref()      &  { return val;             }
-  constexpr inline const value_type& ref() const&& { return std::move(val);  }
-  constexpr inline       value_type& ref()      && { return std::move(val);  }
+  OPTIONAL14_CONSTEXPR inline const value_type& ref() const&  { return val;             }
+  OPTIONAL14_CONSTEXPR inline       value_type& ref()      &  { return val;             }
+  OPTIONAL14_CONSTEXPR inline const value_type& ref() const&& { return std::move(val);  }
+  OPTIONAL14_CONSTEXPR inline       value_type& ref()      && { return std::move(val);  }
 
   template<typename ...U>
   void construct(U&&... args) {
@@ -81,13 +82,13 @@ struct dtor<T, false> {
     }
   }
 
-  constexpr inline const value_type* pointer() const { return &val; }
-  constexpr inline       value_type* pointer()       { return &val; }
+  OPTIONAL14_CONSTEXPR inline const value_type* pointer() const { return &val; }
+  OPTIONAL14_CONSTEXPR inline       value_type* pointer()       { return &val; }
 
-  constexpr inline const value_type& ref() const&  { return val;             }
-  constexpr inline       value_type& ref()      &  { return val;             }
-  constexpr inline const value_type& ref() const&& { return std::move(val);  }
-  constexpr inline       value_type& ref()      && { return std::move(val);  }
+  OPTIONAL14_CONSTEXPR inline const value_type& ref() const&  { return val;             }
+  OPTIONAL14_CONSTEXPR inline       value_type& ref()      &  { return val;             }
+  OPTIONAL14_CONSTEXPR inline const value_type& ref() const&& { return std::move(val);  }
+  OPTIONAL14_CONSTEXPR inline       value_type& ref()      && { return std::move(val);  }
 
   template<typename U>
   void construct(U&& arg) {

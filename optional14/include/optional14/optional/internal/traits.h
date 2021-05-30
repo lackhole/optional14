@@ -12,7 +12,7 @@ namespace internal {
 namespace optional {
 
 template<bool v>
-struct conditional_tf : std::conditional_t<v, std::true_type, std::false_type> {};
+struct conditional_tf : std::conditional<v, std::true_type, std::false_type>::type {};
 
 template<bool v>
 using conditional_tf_t = typename conditional_tf<v>::type;
@@ -38,7 +38,7 @@ struct check_assignable :
 template<typename T>
 struct strip {
 #if __cplusplus <= 201703
-  using type = std::decay_t<T>;
+  using type = typename std::decay<T>::type;
 #else
   using type = std::remove_cvref_t<T>;
 # endif
