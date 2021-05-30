@@ -8,7 +8,7 @@
 namespace optional14 {
 
 struct nullopt_t {
-  constexpr nullopt_t(int) {}
+  constexpr explicit nullopt_t(int) {}
 };
 
 constexpr nullopt_t nullopt{0};
