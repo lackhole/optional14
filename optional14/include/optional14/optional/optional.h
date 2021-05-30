@@ -60,7 +60,13 @@ class optional :
     this->construct_if(*other);
   }
 
-  template<typename U, std::enable_if_t<!std::is_convertible<const U&, value_type>::value, int> = 0>
+  template<typename U,
+    std::enable_if_t<
+      std::is_constructible<value_type, const U&>::value &&
+      internal::optional::check_constructible<value_type, optional<U>>::value &&
+      internal::optional::check_convertible  <value_type, optional<U>>::value &&
+      !std::is_convertible<const U&, value_type>::value,
+    int> = 0>
   explicit constexpr optional(const optional<U>& other) {
     this->construct_if(*other);
   }
@@ -72,6 +78,17 @@ class optional :
       internal::optional::check_convertible  <value_type, optional<U>>::value,
     int> = 0>
   constexpr optional(optional<U>&& other) {
+    this->construct_if(std::move(*other));
+  }
+
+  template<typename U,
+    std::enable_if_t<
+      std::is_constructible<value_type, U&&>::value &&
+      internal::optional::check_constructible<value_type, optional<U>>::value &&
+      internal::optional::check_convertible  <value_type, optional<U>>::value &&
+      !std::is_convertible<U&&, value_type>::value,
+    int> = 0>
+  explicit constexpr optional(optional<U>&& other) {
     this->construct_if(std::move(*other));
   }
 
