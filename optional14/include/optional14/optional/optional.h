@@ -9,6 +9,7 @@
 # include <new>
 # include <utility>
 #
+# include "optional14/optional/internal/check_overload.h"
 # include "optional14/optional/internal/move_assignment.h"
 # include "optional14/optional/internal/traits.h"
 # include "optional14/optional/bad_optional_access.h"
@@ -20,7 +21,11 @@ namespace optional14 {
 
 template<typename T>
 class optional :
- private internal::optional::move_assign<T> {
+ private internal::optional::move_assign<T>,
+ private internal::optional::check_copy_constructible<T>,
+ private internal::optional::check_move_constructible<T>,
+ private internal::optional::check_copy_assignable<T>,
+ private internal::optional::check_move_assignable<T> {
   using base = internal::optional::move_assign<T>;
   using base::base;
 
@@ -48,9 +53,9 @@ class optional :
   template<typename U,
     std::enable_if_t<
       std::is_constructible<value_type, const U&>::value &&
-        internal::optional::check_constructible<value_type, optional<U>>::value &&
-        internal::optional::check_convertible  <value_type, optional<U>>::value,
-      int> = 0>
+      internal::optional::check_constructible<value_type, optional<U>>::value &&
+      internal::optional::check_convertible  <value_type, optional<U>>::value,
+    int> = 0>
   constexpr optional(const optional<U>& other) {
     this->construct_if(*other);
   }
@@ -67,11 +72,6 @@ class optional :
       internal::optional::check_convertible  <value_type, optional<U>>::value,
     int> = 0>
   constexpr optional(optional<U>&& other) {
-    this->construct_if(std::move(*other));
-  }
-
-  template<typename U, std::enable_if_t<!std::is_convertible<U&&, value_type>::value, int> = 0>
-  explicit constexpr optional(optional<U>&& other) {
     this->construct_if(std::move(*other));
   }
 
@@ -157,7 +157,7 @@ class optional :
       std::is_constructible<value_type , U>::value &&
       std::is_assignable   <value_type&, U>::value,
     int> = 0>
-  optional& operator=(const optional<U>&& other) {
+  optional& operator=(optional<U>&& other) {
     if (other.has_value()) {
       if (this->has_value())
         this->val = std::move(*other);
@@ -206,7 +206,6 @@ class optional :
     return std::move(this->ref());
   }
 
-  // static_assert instead of enable_if because there is no matching overloads if this fails
   template<typename U>
   constexpr value_type value_or(U&& default_value) const & {
     static_assert(std::is_copy_constructible<value_type>::value,
@@ -470,7 +469,6 @@ constexpr inline bool operator>=(const optional<T>& opt, const U& value) {
 template<typename T, typename U>
 constexpr inline bool operator>=(const T& value, const optional<U>& opt) {
   return bool(opt) ? value >= opt : true;
-
 }
 
 } // namespace optional14
