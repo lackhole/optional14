@@ -5,6 +5,9 @@
 * Header only
 * You can get a integrated single header file at [here](https://github.com/lackhole/optional14/releases)
 
+[![Ubuntu](https://github.com/lackhole/optional14/actions/workflows/ubuntu.yml/badge.svg?branch=main)](https://github.com/lackhole/optional14/actions/workflows/ubuntu.yml)
+[![Windows](https://github.com/lackhole/optional14/actions/workflows/windows.yml/badge.svg?branch=main)](https://github.com/lackhole/optional14/actions/workflows/windows.yml)
+
 ```cpp
 namespace o14 = optional14;
 
