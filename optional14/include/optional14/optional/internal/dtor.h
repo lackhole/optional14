@@ -22,7 +22,7 @@ struct dtor {
     : null{} {}
 
   template<typename ...Args>
-  constexpr dtor(in_place_t, Args&&... args)
+  constexpr explicit dtor(in_place_t, Args&&... args)
     : val(std::forward<Args>(args)...),
       valid(true) {}
 
@@ -66,7 +66,7 @@ template<typename T>
 struct dtor<T, false> {
   using value_type = T;
 
-  constexpr dtor() noexcept
+  constexpr explicit dtor() noexcept
     : null{} {}
 
   template<typename ...Args>
