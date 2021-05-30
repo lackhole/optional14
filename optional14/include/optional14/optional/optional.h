@@ -141,7 +141,7 @@ class optional :
     if (has_value()) {
       this->val = std::forward<U>(value);
     } else {
-      this->template construct(std::forward<U>(value));
+      this->construct(std::forward<U>(value));
     }
     return *this;
   }
