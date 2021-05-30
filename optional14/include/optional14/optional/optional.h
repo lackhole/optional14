@@ -280,7 +280,7 @@ class optional :
     std::enable_if_t<
       std::is_constructible<value_type, std::initializer_list<U>&, Args&&...>::value,
     int> = 0>
-  value_type emplace(std::initializer_list<U> ilist, Args&&... args) {
+  value_type& emplace(std::initializer_list<U> ilist, Args&&... args) {
     this->reset();
     this->construct(ilist, std::forward<Args>(args)...);
   }

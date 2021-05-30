@@ -33,13 +33,13 @@ struct dtor {
     }
   }
 
-  inline const value_type* pointer() const { return &val; }
-  inline       value_type* pointer()       { return &val; }
+  constexpr inline const value_type* pointer() const { return &val; }
+  constexpr inline       value_type* pointer()       { return &val; }
 
-  inline const value_type& ref() const&  { return val;             }
-  inline       value_type& ref()      &  { return val;             }
-  inline const value_type& ref() const&& { return std::move(val);  }
-  inline       value_type& ref()      && { return std::move(val);  }
+  constexpr inline const value_type& ref() const&  { return val;             }
+  constexpr inline       value_type& ref()      &  { return val;             }
+  constexpr inline const value_type& ref() const&& { return std::move(val);  }
+  constexpr inline       value_type& ref()      && { return std::move(val);  }
 
   template<typename ...U>
   void construct(U&&... args) {
@@ -81,13 +81,13 @@ struct dtor<T, false> {
     }
   }
 
-  inline const value_type* pointer() const { return &val; }
-  inline       value_type* pointer()       { return &val; }
+  constexpr inline const value_type* pointer() const { return &val; }
+  constexpr inline       value_type* pointer()       { return &val; }
 
-  inline const value_type& ref() const&  { return val;             }
-  inline       value_type& ref()      &  { return val;             }
-  inline const value_type& ref() const&& { return std::move(val);  }
-  inline       value_type& ref()      && { return std::move(val);  }
+  constexpr inline const value_type& ref() const&  { return val;             }
+  constexpr inline       value_type& ref()      &  { return val;             }
+  constexpr inline const value_type& ref() const&& { return std::move(val);  }
+  constexpr inline       value_type& ref()      && { return std::move(val);  }
 
   template<typename U>
   void construct(U&& arg) {
