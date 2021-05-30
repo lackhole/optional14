@@ -20,8 +20,8 @@ struct hash<optional14::optional<T>> : optional14::internal::optional::hash_cons
   using argument_type = optional14::optional<T>;
   using result_type = std::size_t;
 
-  inline result_type operator()(const argument_type& key) const {
-    return key.has_value() ? hash<std::remove_const_t<T>>(*key) : 0;
+  result_type operator()(const argument_type& key) const {
+    return key.has_value() ? ::std::hash<std::remove_const_t<T>>()(*key) : 0;
   }
 };
 
