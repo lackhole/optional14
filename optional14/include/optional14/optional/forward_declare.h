@@ -10,10 +10,6 @@ namespace optional14 {
 template<typename T>
 class optional;
 
-template<typename T>
-inline void swap(optional<T>& lhs, optional<T>& rhs) noexcept(noexcept(lhs.swap(rhs)));
-
-
 } // namespace optional14
 
 # endif // OPTIONAL14_OPTIONAL_FORWARD_DECLARE_H_

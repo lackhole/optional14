@@ -62,7 +62,12 @@ std::swap(op1, op2); // copy is selected for non-movable object
 ```
 [example code](main.cc)  
 
-Met the all requirements of the [current STL](https://en.cppreference.com/w/cpp/utility/optional) except for the [`std::is_nothrow_swappable<value_type>::value`](https://github.com/lackhole/optional14/blob/main/optional14/include/optional14/optional/optional.h#L224),
+### Notes
+* This project meets the all requirements of the [current STL](https://en.cppreference.com/w/cpp/utility/optional) except for the [`std::is_nothrow_swappable<value_type>::value`](https://github.com/lackhole/optional14/blob/main/optional14/include/optional14/optional/optional.h#L224),
     since there is no way to implement this in C++14
+* This project specializes `std::hash` and overloads `std::swap` for type `optional14::optional<T>` without conflicts.  
+  If you're not willing for this to do so you can change their namespaces.
+    * [hash.h](https://github.com/lackhole/optional14/blob/main/optional14/include/optional14/optional/hash.h#L16)
+    * [swap.h](https://github.com/lackhole/optional14/blob/main/optional14/include/optional14/optional/swap.h#L15)
 
 ### C++11 implementation: WIP

@@ -5,21 +5,23 @@
 # ifndef OPTIONAL14_OPTIONAL_SWAP_H_
 # define OPTIONAL14_OPTIONAL_SWAP_H_
 #
+# include <algorithm>
 # include <type_traits>
+# include <utility>
 #
-# include "optional14/optional/forward_declare.h"
 # include "optional14/optional/internal/is_swappable.h"
+# include "optional14/optional/forward_declare.h"
 
-namespace optional14 {
+namespace std {
 
 template<typename T,
-  std::enable_if_t<
-    std::is_move_constructible<T>::value && internal::optional::is_swappable<T>::value,
-    int> = 0>
-inline void swap(optional<T>& lhs, optional<T>& rhs) noexcept(noexcept(lhs.swap(rhs))) {
+  ::std::enable_if_t<
+    ::std::is_move_constructible<T>::value && ::optional14::internal::optional::is_swappable<T>::value,
+  int> = 0>
+void swap(::optional14::optional<T>& lhs, ::optional14::optional<T>& rhs) noexcept(noexcept(lhs.swap(rhs))) {
   lhs.swap(rhs);
 }
 
-} // namespace optional14
+} // namespace std
 
 # endif // OPTIONAL14_OPTIONAL_SWAP_H_
