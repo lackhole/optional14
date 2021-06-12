@@ -124,6 +124,7 @@ class optional :
 
   optional& operator=(nullopt_t) noexcept {
     this->reset();
+    return *this;
   }
 
   constexpr optional& operator=(optional const&) = default;
@@ -164,6 +165,7 @@ class optional :
       if (this->has_value())
         this->reset();
     }
+    return *this;
   }
 
   template<typename U,
@@ -184,6 +186,7 @@ class optional :
       if (this->has_value())
         this->reset();
     }
+    return *this;
   }
 
 
@@ -274,6 +277,7 @@ class optional :
   value_type& emplace(Args&&... args) {
     this->reset();
     this->construct(std::forward<Args>(args)...);
+    return **this;
   }
 
   template<typename U, typename ...Args,
@@ -283,6 +287,7 @@ class optional :
   value_type& emplace(std::initializer_list<U> ilist, Args&&... args) {
     this->reset();
     this->construct(ilist, std::forward<Args>(args)...);
+    return **this;
   }
 
 };
