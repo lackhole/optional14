@@ -9,6 +9,7 @@
 # include <utility>
 #
 # include "optional14/optional/inplace_t.h"
+# include "optional14/optional/internal/macro.h"
 
 namespace optional14 {
 namespace internal {
@@ -34,12 +35,12 @@ struct dtor {
   }
 
   constexpr const value_type* pointer() const noexcept { return addressof(val); }
-  constexpr       value_type* pointer()       noexcept { return addressof(val); }
+  OP_CONSTEXPR    value_type* pointer()       noexcept { return addressof(val); }
 
   constexpr const value_type& ref() const&  noexcept { return val;       }
-  constexpr       value_type& ref()      &  noexcept { return val;       }
+  OP_CONSTEXPR    value_type& ref()      &  noexcept { return val;       }
   constexpr const value_type& ref() const&& noexcept { return std::move(val); }
-  constexpr       value_type& ref()      && noexcept { return std::move(val); }
+  OP_CONSTEXPR    value_type& ref()      && noexcept { return std::move(val); }
 
   template<typename ...Args>
   void construct(Args&&... args) {
@@ -82,12 +83,12 @@ struct dtor<T, false> {
   }
 
   constexpr const value_type* pointer() const noexcept { return addressof(val); }
-  constexpr       value_type* pointer()       noexcept { return addressof(val); }
+  OP_CONSTEXPR    value_type* pointer()       noexcept { return addressof(val); }
 
   constexpr const value_type& ref() const&  noexcept { return val;        }
-  constexpr       value_type& ref()      &  noexcept { return val;        }
+  OP_CONSTEXPR    value_type& ref()      &  noexcept { return val;        }
   constexpr const value_type& ref() const&& noexcept { return std::move(val);  }
-  constexpr       value_type& ref()      && noexcept { return std::move(val);  }
+  OP_CONSTEXPR    value_type& ref()      && noexcept { return std::move(val);  }
 
   template<typename ...Args>
   void construct(Args&&... args) {

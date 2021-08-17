@@ -13,6 +13,8 @@ namespace optional14 {
 namespace internal {
 namespace optional {
 
+# if __cplusplus < 201703L
+
 template<typename T>
 using void_t = void;
 
@@ -40,13 +42,20 @@ using is_swappable_with = detail::is_swappable_with_impl<T, U>;
 
 template<typename T>
 struct is_swappable :
-  std::conditional_t<
+  std::conditional<
     !is_referencable<T>::value,
     std::false_type,
     is_swappable_with<
-      std::add_lvalue_reference_t<T>,
-      std::add_lvalue_reference_t<T>>
-  >{};
+      typename std::add_lvalue_reference<T>::type,
+      typename std::add_lvalue_reference<T>::type>
+  >::type {};
+
+# else
+
+template<typename T>
+using is_swappable = std::is_swappable<T>;
+
+# endif
 
 } // namespace optional
 } // namespace internal

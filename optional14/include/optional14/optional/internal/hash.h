@@ -20,10 +20,10 @@ struct constructible {};
 
 template<typename T>
 using hash_constructible =
-std::conditional_t<
+typename std::conditional<
   std::is_default_constructible<std::hash<T>>::value,
   constructible,
-  not_constructible>;
+  not_constructible>::type;
 
 } // namespace optional
 } // namespace internal
