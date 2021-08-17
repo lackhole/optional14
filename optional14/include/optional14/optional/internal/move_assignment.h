@@ -38,9 +38,9 @@ struct move_assign<T, false> : copy_assign<T> {
       this->reset();
     } else {
       if (this->valid)
-        this->val = other.val;
+        this->val = std::move(other.val);
       else
-        this->construct(other.val);
+        this->construct(std::move(other.val));
     }
     return *this;
   }

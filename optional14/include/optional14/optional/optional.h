@@ -113,11 +113,22 @@ class optional :
 
   template<typename U = value_type,
     std::enable_if_t<
-      std::is_constructible<value_type,U&&>::value &&
+      std::is_constructible<value_type, U&&>::value &&
+      std::is_convertible<U&&, value_type>::value &&
       !std::is_same<internal::optional::strip_t<U>, in_place_t>::value &&
       !std::is_same<internal::optional::strip_t<U>, optional<value_type>>::value,
     int> = 0>
   constexpr optional(U&& value)
+    : base(in_place, std::forward<U>(value)) {}
+
+  template<typename U = value_type,
+    std::enable_if_t<
+      std::is_constructible<value_type, U&&>::value &&
+      !std::is_convertible<U&&, value_type>::value &&
+      !std::is_same<internal::optional::strip_t<U>, in_place_t>::value &&
+      !std::is_same<internal::optional::strip_t<U>, optional<value_type>>::value,
+    int> = 0>
+  constexpr explicit optional(U&& value)
     : base(in_place, std::forward<U>(value)) {}
 
   // assignment operators
