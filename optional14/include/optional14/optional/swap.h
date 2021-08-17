@@ -15,9 +15,9 @@
 namespace std {
 
 template<typename T,
-  ::std::enable_if_t<
+  typename ::std::enable_if<
     ::std::is_move_constructible<T>::value && ::optional14::internal::optional::is_swappable<T>::value,
-  int> = 0>
+  int>::type = 0>
 void swap(::optional14::optional<T>& lhs, ::optional14::optional<T>& rhs) noexcept(noexcept(lhs.swap(rhs))) {
   lhs.swap(rhs);
 }

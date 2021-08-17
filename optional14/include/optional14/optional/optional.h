@@ -34,9 +34,9 @@ class optional :
 
   static_assert(!std::is_reference<T>::value,
     "optional14::optional : T must not be a reference type");
-  static_assert(!std::is_same<std::remove_reference_t<std::decay_t<T>>, nullopt_t>::value,
+  static_assert(!std::is_same<typename std::remove_reference<typename std::decay<T>::type>::type, nullopt_t>::value,
     "optional14::optional : T must not be optional14::nullopt_t");
-  static_assert(!std::is_same<std::remove_reference_t<std::decay_t<T>>, in_place_t>::value,
+  static_assert(!std::is_same<typename std::remove_reference<typename std::decay<T>::type>::type, in_place_t>::value,
     "optional14::optional : T must not be optional14::in_place_t");
   static_assert(std::is_destructible<T>::value,
     "optional14::optional : T must be destructible");
@@ -51,83 +51,87 @@ class optional :
   constexpr optional(optional&& other) = default;
 
   template<typename U,
-    std::enable_if_t<
+    typename std::enable_if<
       std::is_constructible<value_type, const U&>::value &&
       internal::optional::check_constructible<value_type, optional<U>>::value &&
       internal::optional::check_convertible  <value_type, optional<U>>::value,
-    int> = 0>
-  constexpr optional(const optional<U>& other) {
+    int>::type = 0>
+  OP_CONSTEXPR optional(const optional<U>& other) {
     this->construct_if(*other);
   }
 
   template<typename U,
-    std::enable_if_t<
+    typename std::enable_if<
       std::is_constructible<value_type, const U&>::value &&
       internal::optional::check_constructible<value_type, optional<U>>::value &&
       internal::optional::check_convertible  <value_type, optional<U>>::value &&
       !std::is_convertible<const U&, value_type>::value,
-    int> = 0>
-  explicit constexpr optional(const optional<U>& other) {
+    int>::type = 0>
+  explicit OP_CONSTEXPR optional(const optional<U>& other) {
     this->construct_if(*other);
   }
 
   template<typename U,
-    std::enable_if_t<
+    typename std::enable_if<
       std::is_constructible<value_type, U&&>::value &&
       internal::optional::check_constructible<value_type, optional<U>>::value &&
       internal::optional::check_convertible  <value_type, optional<U>>::value,
-    int> = 0>
-  constexpr optional(optional<U>&& other) {
+    int>::type = 0>
+  OP_CONSTEXPR optional(optional<U>&& other) {
     this->construct_if(std::move(*other));
   }
 
   template<typename U,
-    std::enable_if_t<
+    typename std::enable_if<
       std::is_constructible<value_type, U&&>::value &&
       internal::optional::check_constructible<value_type, optional<U>>::value &&
       internal::optional::check_convertible  <value_type, optional<U>>::value &&
       !std::is_convertible<U&&, value_type>::value,
-    int> = 0>
-  explicit constexpr optional(optional<U>&& other) {
+    int>::type = 0>
+  explicit OP_CONSTEXPR optional(optional<U>&& other) {
     this->construct_if(std::move(*other));
   }
 
   // Separated into 2 overloads to prevent MSVC from making an ambiguous call in C++14
-  template<std::enable_if_t<std::is_constructible<value_type>::value, int> = 0>
+  template<typename Dummy = void,
+    typename std::enable_if<
+      std::is_same<Dummy, void>::value &&
+      std::is_constructible<value_type>::value,
+    int>::type = 0>
   constexpr explicit optional(in_place_t)
     : base(in_place) {}
 
   template<typename Arg, typename ...Args,
-    std::enable_if_t<
+    typename std::enable_if<
       std::is_constructible<value_type, Arg, Args...>::value,
-    int> = 0>
+    int>::type = 0>
   constexpr explicit optional(in_place_t, Arg&& arg, Args&&... args)
     : base(in_place, std::forward<Arg>(arg), std::forward<Args>(args)...) {}
 
   template<typename U, typename ...Args,
-    std::enable_if_t<
+    typename std::enable_if<
       std::is_constructible<value_type, std::initializer_list<U>&, Args&&...>::value,
-    int> = 0>
+    int>::type = 0>
   constexpr explicit optional(in_place_t, std::initializer_list<U> ilist, Args&&... args)
     : base(in_place, ilist, std::forward<Args>(args)...) {}
 
   template<typename U = value_type,
-    std::enable_if_t<
+    typename std::enable_if<
       std::is_constructible<value_type, U&&>::value &&
       std::is_convertible<U&&, value_type>::value &&
       !std::is_same<internal::optional::strip_t<U>, in_place_t>::value &&
       !std::is_same<internal::optional::strip_t<U>, optional<value_type>>::value,
-    int> = 0>
+    int>::type = 0>
   constexpr optional(U&& value)
     : base(in_place, std::forward<U>(value)) {}
 
   template<typename U = value_type,
-    std::enable_if_t<
+    typename std::enable_if<
       std::is_constructible<value_type, U&&>::value &&
       !std::is_convertible<U&&, value_type>::value &&
       !std::is_same<internal::optional::strip_t<U>, in_place_t>::value &&
       !std::is_same<internal::optional::strip_t<U>, optional<value_type>>::value,
-    int> = 0>
+    int>::type = 0>
   constexpr explicit optional(U&& value)
     : base(in_place, std::forward<U>(value)) {}
 
@@ -138,17 +142,17 @@ class optional :
     return *this;
   }
 
-  constexpr optional& operator=(optional const&) = default;
-  constexpr optional& operator=(optional &&) = default;
+  OP_CONSTEXPR optional& operator=(optional const&) = default;
+  OP_CONSTEXPR optional& operator=(optional &&) = default;
 
   template<typename U,
-    std::enable_if_t<
+    typename std::enable_if<
       (std::is_constructible<value_type, U>::value &&
        std::is_assignable<value_type&, U>::value &&
       !std::is_same<internal::optional::strip_t<U>, optional>::value) &&
       (!std::is_scalar<value_type>::value ||
-       !std::is_same<std::decay_t<U>, value_type>::value),
-    int> = 0>
+       !std::is_same<typename std::decay<U>::type, value_type>::value),
+    int>::type = 0>
   optional& operator=(U&& value) {
     if (has_value()) {
       this->val = std::forward<U>(value);
@@ -159,13 +163,13 @@ class optional :
   }
 
   template<typename U,
-    std::enable_if_t<
+    typename std::enable_if<
       internal::optional::check_constructible<value_type, optional<U>>::value &&
       internal::optional::check_convertible  <value_type, optional<U>>::value &&
       internal::optional::check_assignable   <value_type, optional<U>>::value &&
       std::is_constructible<value_type , const U&>::value &&
       std::is_assignable   <value_type&, const U&>::value,
-    int> = 0>
+    int>::type = 0>
   optional& operator=(const optional<U>& other) {
     if (other.has_value()) {
       if (this->has_value())
@@ -180,13 +184,13 @@ class optional :
   }
 
   template<typename U,
-    std::enable_if_t<
+    typename std::enable_if<
       internal::optional::check_constructible<value_type, optional<U>>::value &&
       internal::optional::check_convertible  <value_type, optional<U>>::value &&
       internal::optional::check_assignable   <value_type, optional<U>>::value &&
       std::is_constructible<value_type , U>::value &&
       std::is_assignable   <value_type&, U>::value,
-    int> = 0>
+    int>::type = 0>
   optional& operator=(optional<U>&& other) {
     if (other.has_value()) {
       if (this->has_value())
@@ -201,37 +205,37 @@ class optional :
   }
 
 
-  constexpr inline const value_type*  operator->() const { return this->pointer(); }
-  constexpr inline       value_type*  operator->()       { return this->pointer(); }
+  constexpr const value_type*  operator->() const noexcept { return this->pointer(); }
+  OP_CONSTEXPR    value_type*  operator->()       noexcept { return this->pointer(); }
 
-  constexpr inline const value_type&  operator*() const&  { return this->ref(); }
-  constexpr inline       value_type&  operator*()      &  { return this->ref(); }
-  constexpr inline const value_type&& operator*() const&& { return std::move(this->ref()); }
-  constexpr inline       value_type&& operator*()      && { return std::move(this->ref()); }
+  constexpr const value_type&  operator*() const&  noexcept { return this->ref(); }
+  OP_CONSTEXPR    value_type&  operator*()      &  noexcept { return this->ref(); }
+  constexpr const value_type&& operator*() const&& noexcept { return std::move(this->ref()); }
+  OP_CONSTEXPR    value_type&& operator*()      && noexcept { return std::move(this->ref()); }
 
-  constexpr inline explicit operator bool() const noexcept {
+  constexpr explicit operator bool() const noexcept {
     return this->valid;
   }
-  constexpr inline bool has_value() const noexcept {
+  constexpr bool has_value() const noexcept {
     return this->valid;
   }
 
-  constexpr inline value_type& value() & {
+  OP_CONSTEXPR inline value_type& value() & {
     if (!this->has_value())
       throw bad_optional_access{};
     return this->ref();
   }
-  constexpr inline const value_type& value() const& {
+  OP_CONSTEXPR inline const value_type& value() const& {
     if (!this->has_value())
       throw bad_optional_access{};
     return this->ref();
   }
-  constexpr inline value_type&& value() && {
+  OP_CONSTEXPR inline value_type&& value() && {
     if (!this->has_value())
       throw bad_optional_access{};
     return std::move(this->ref());
   }
-  constexpr inline const value_type&& value() const && {
+  OP_CONSTEXPR inline const value_type&& value() const && {
     if (!this->has_value())
       throw bad_optional_access{};
     return std::move(this->ref());
@@ -248,7 +252,7 @@ class optional :
   }
 
   template<typename U>
-  constexpr value_type value_or(U&& default_value) && {
+  OP_CONSTEXPR value_type value_or(U&& default_value) && {
     static_assert(std::is_move_constructible<value_type>::value,
                   "optional14::optional<T>::value_or : T must be move constructible");
     static_assert(std::is_convertible<U&&, value_type>::value,
@@ -284,7 +288,10 @@ class optional :
 
   using base::reset;
 
-  template<typename ...Args, std::enable_if_t<std::is_constructible<value_type, Args...>::value, int> = 0>
+  template<typename ...Args,
+    typename std::enable_if<
+      std::is_constructible<value_type, Args&&...>::value,
+    int>::type = 0>
   value_type& emplace(Args&&... args) {
     this->reset();
     this->construct(std::forward<Args>(args)...);
@@ -292,9 +299,9 @@ class optional :
   }
 
   template<typename U, typename ...Args,
-    std::enable_if_t<
+    typename std::enable_if<
       std::is_constructible<value_type, std::initializer_list<U>&, Args&&...>::value,
-    int> = 0>
+    int>::type = 0>
   value_type& emplace(std::initializer_list<U> ilist, Args&&... args) {
     this->reset();
     this->construct(ilist, std::forward<Args>(args)...);
@@ -308,8 +315,8 @@ template<class T> optional(T) -> optional<T>;
 # endif
 
 template<typename T>
-constexpr inline optional<std::decay_t<T>> make_optional(T&& value) {
-  return optional<std::decay_t<T>>(std::forward<T>(value));
+constexpr inline optional<typename std::decay<T>::type> make_optional(T&& value) {
+  return optional<typename std::decay<T>::type>(std::forward<T>(value));
 }
 
 template<typename T, typename ...Args>
@@ -325,7 +332,7 @@ constexpr inline optional<T> make_optional(std::initializer_list<U> ilist, Args&
 // compare two optional objects
 
 template<typename T, typename U >
-constexpr bool operator==(const optional<T>& lhs, const optional<U>& rhs) {
+OP_CONSTEXPR bool operator==(const optional<T>& lhs, const optional<U>& rhs) {
   if (bool(lhs) != bool(rhs))
     return false;
   if (!lhs)
@@ -334,7 +341,7 @@ constexpr bool operator==(const optional<T>& lhs, const optional<U>& rhs) {
 }
 
 template<typename T, typename U >
-constexpr bool operator!=(const optional<T>& lhs, const optional<U>& rhs) {
+OP_CONSTEXPR bool operator!=(const optional<T>& lhs, const optional<U>& rhs) {
   if (bool(lhs) != bool(rhs))
     return true;
   if (!lhs)
@@ -343,7 +350,7 @@ constexpr bool operator!=(const optional<T>& lhs, const optional<U>& rhs) {
 }
 
 template<typename T, typename U >
-constexpr bool operator<(const optional<T>& lhs, const optional<U>& rhs) {
+OP_CONSTEXPR bool operator<(const optional<T>& lhs, const optional<U>& rhs) {
   if (!rhs.has_value())
     return false;
   if (!lhs.has_value())
@@ -352,7 +359,7 @@ constexpr bool operator<(const optional<T>& lhs, const optional<U>& rhs) {
 }
 
 template<typename T, typename U >
-constexpr bool operator<=(const optional<T>& lhs, const optional<U>& rhs) {
+OP_CONSTEXPR bool operator<=(const optional<T>& lhs, const optional<U>& rhs) {
   if (!lhs.has_value())
     return true;
   if (!rhs.has_value())
@@ -361,7 +368,7 @@ constexpr bool operator<=(const optional<T>& lhs, const optional<U>& rhs) {
 }
 
 template<typename T, typename U >
-constexpr bool operator>(const optional<T>& lhs, const optional<U>& rhs) {
+OP_CONSTEXPR bool operator>(const optional<T>& lhs, const optional<U>& rhs) {
   if (!lhs.has_value())
     return false;
   if (!rhs.has_value())
@@ -370,7 +377,7 @@ constexpr bool operator>(const optional<T>& lhs, const optional<U>& rhs) {
 }
 
 template<typename T, typename U >
-constexpr bool operator>=(const optional<T>& lhs, const optional<U>& rhs) {
+OP_CONSTEXPR bool operator>=(const optional<T>& lhs, const optional<U>& rhs) {
   if (!rhs.has_value())
     return true;
   if (!lhs.has_value())
