@@ -43,7 +43,7 @@ struct dtor {
 
   template<typename ...Args>
   void construct(Args&&... args) {
-    ::new((void*)addressof(val)) value_type(std::forward<Args>(args)...);
+    ::new((void*)std::addressof(val)) value_type(std::forward<Args>(args)...);
     valid = true;
   }
 
@@ -91,7 +91,7 @@ struct dtor<T, false> {
 
   template<typename ...Args>
   void construct(Args&&... args) {
-    ::new((void*)addressof(val)) value_type(std::forward<Args>(args)...);
+    ::new((void*)std::addressof(val)) value_type(std::forward<Args>(args)...);
     valid = true;
   }
 
